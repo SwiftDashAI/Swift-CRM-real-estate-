@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Drawer } from "@/components/ui/Drawer";
 import { formatINR, isNonNegativeNumber } from "@/lib/utils";
-import type { Lead, Property, Deal } from "@/lib/types";
+import type { Lead, Property, Deal, PaymentStatus, DealStatus } from "@/lib/types";
 
 const PAYMENT_STATUSES = ["PENDING", "PARTIAL", "RECEIVED"];
 const DEAL_STATUSES = ["NEGOTIATION", "WON", "LOST"];
@@ -33,8 +33,8 @@ export function DealFormDrawer({
     deal_value: deal?.deal_value?.toString() ?? "",
     commission_percent: deal?.commission_percent?.toString() ?? "2",
     commission_received: deal?.commission_received?.toString() ?? "0",
-    payment_status: deal?.payment_status ?? "PENDING",
-    status: deal?.status ?? "NEGOTIATION",
+    payment_status: (deal?.payment_status ?? "PENDING") as PaymentStatus,
+    status: (deal?.status ?? "NEGOTIATION") as DealStatus,
     closing_date: deal?.closing_date ?? "",
   });
   const [error, setError] = useState<string | null>(null);
@@ -161,7 +161,7 @@ export function DealFormDrawer({
           </div>
           <div>
             <label className="label">Payment status</label>
-            <select className="input" value={form.payment_status} onChange={(e) => update("payment_status", e.target.value)}>
+            <select className="input" value={form.payment_status} onChange={(e) => update("payment_status", e.target.value as PaymentStatus)}>
               {PAYMENT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
@@ -170,7 +170,7 @@ export function DealFormDrawer({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="label">Deal status</label>
-            <select className="input" value={form.status} onChange={(e) => update("status", e.target.value)}>
+            <select className="input" value={form.status} onChange={(e) => update("status", e.target.value as DealStatus)}>
               {DEAL_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
